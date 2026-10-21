@@ -110,7 +110,7 @@ SELECT current_catalog(), current_schema()
 
 -- COMMAND ----------
 
-values('/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv')
+values('/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv')
 
 -- COMMAND ----------
 
@@ -128,7 +128,7 @@ values('/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_fil
 -- MAGIC %python
 -- MAGIC spark.sql(f'''
 -- MAGIC SELECT *
--- MAGIC FROM text.`<FILL-IN>`
+-- MAGIC FROM text.`/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv`
 -- MAGIC '''
 -- MAGIC ).display()
 
@@ -240,7 +240,18 @@ values('/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_fil
 
 -- COMMAND ----------
 
-<FILL-IN>
+select *
+from read_files('/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',
+                format => "csv",
+                sep => ",",
+                header => true,
+                schema => '''
+                        item_id STRING,
+                        name STRING,
+                        price DOUBLE
+                ''',
+                rescueddatacolumn => '_rescued_data'
+)
 
 -- COMMAND ----------
 
@@ -362,7 +373,24 @@ FROM 10_lab_solution
 DROP TABLE IF EXISTS 10_lab_bronze;
 
 ---- Complete your CTAS statement below:
-<FILL-IN>
+create table 10_lab_bronze as
+select *,
+_metadata.file_modification_time as file_modification_time,
+_metadata.file_name as source_file,
+current_timestamp() as ingestion_time
+from read_files('/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',
+                format => "csv",
+                sep => ",",
+                header => true,
+                schema => '''
+                        item_id STRING,
+                        name STRING,
+                        price DOUBLE
+                ''',
+                rescueddatacolumn => '_rescued_data'
+);
+
+select * from 10_lab_bronze;
 
 -- COMMAND ----------
 
@@ -503,25 +531,30 @@ FROM 10_lab_challenge_solution;
 
 -- COMMAND ----------
 
+drop table if exists 10_lab_challenge;
+
 ---- COMPLETE THE QUERY BELOW TO CLEAN UP THE _RESCUED_DATA column to create the price_fixed column
 CREATE TABLE 10_lab_challenge
 SELECT
   item_id,
   name,
   price,
-  <FILL-IN> AS price_fixed,   -- CLEAN the rescued data column and return it as a numeric value with the other prices
-  _rescued_data,
+  coalesce(try_cast(replace(_rescued_data:price, '$', '') as DOUBLE)) AS price_fixed,   -- CLEAN the rescued data column and return it as a numeric value with the other prices
+  -- _rescued_data,
   _metadata.file_modification_time AS file_modification_time,
   _metadata.file_name AS source_file, 
   current_timestamp() as ingestion_timestamp
 FROM read_files(
-        '/Volumes/'|| my_catalog || '/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',  -- <FILL-IN>
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',  -- <FILL-IN>
         format => "csv",
         sep => ",",
         header => true,
         schema => 'item_id STRING, name STRING, price DOUBLE', 
         rescueddatacolumn => "_rescued_data"
       );
+
+SELECT *
+FROM 10_lab_challenge
 
 -- COMMAND ----------
 

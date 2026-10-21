@@ -20,8 +20,8 @@ create_volume(in_catalog = f'{my_catalog}', in_schema = 'data_ingestion', volume
 # COMMAND ----------
 
 ## Copy one file to the cloud storage to ingest
-copy_files(copy_from = '/Volumes/dbacademy_ecommerce/v01/raw/sales-csv/', copy_to = f"/Volumes/{my_catalog}/data_ingestion/csv_files_autoloader_source/", n=1)
+copy_files(copy_from = '/Volumes/databricks_ilt/day1/raw/sales-csv/', copy_to = f"/Volumes/{my_catalog}/data_ingestion/csv_files_autoloader_source/", n=1)
 
 
 ## Copy multiple files to the cloud storage staging area to copy into the above volume during the demonstration
-copy_files(copy_from = '/Volumes/dbacademy_ecommerce/v01/raw/sales-csv/', copy_to = f"/Volumes/{my_catalog}/data_ingestion/auto_loader_staging_files/", n=3)
+copy_files(copy_from = '/Volumes/databricks_ilt/day1/raw/sales-csv/', copy_to = f"/Volumes/{my_catalog}/data_ingestion/auto_loader_staging_files/", n=3)

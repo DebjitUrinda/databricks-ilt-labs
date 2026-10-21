@@ -1,12 +1,13 @@
 # Databricks notebook source
-## Determines if in Vocareum or Other Workspace and sets up the catalog
+## Determines the catalog to use in Vocareum or another workspace.
 ## Usage: my_catalog = build_user_catalog() within your demo/lab setup.
 
 import re
 from typing import Optional
 
+
 def _safe_uc_name(value: str) -> str:
-    # UC identifiers are generally safest with letters, numbers, underscores
+    # UC identifiers are generally safest with letters, numbers, underscores.
     value = value.strip().lower()
     value = re.sub(r"[^a-z0-9_]", "_", value)
     value = re.sub(r"_+", "_", value).strip("_")
@@ -14,117 +15,52 @@ def _safe_uc_name(value: str) -> str:
 
 
 def _current_user_email() -> str:
-    """
-    Get the user's name and email address.
-    """
+    """Get the current user's identity."""
     return spark.sql("SELECT current_user()").first()[0]
 
 
-def _get_workspace_catalogs():
-    """
-    Returns a set of Catalogs visible to that user.
-    """
-    list_of_catalogs_in_workspace = [row["catalog"].strip().lower() for row in spark.sql("SHOW CATALOGS").collect()]
-    return list_of_catalogs_in_workspace
+def _get_workspace_catalogs() -> set[str]:
+    """Return the catalog names visible to the current user."""
+    return {
+        row["catalog"].strip().lower()
+        for row in spark.sql("SHOW CATALOGS").collect()
+    }
 
 
 def _catalog_exists(name: str, catalogs: set[str]) -> bool:
+    """Check whether a catalog exists and is visible to the user."""
+    return name.lower() in catalogs
+
+
+def build_user_catalog(
+    prefix: str = "labuser",
+    catalog_forced: Optional[str] = "databricks_ilt",
+) -> str:
     """
-    Catalog checker to see if the catalog already exists for that user.
+    Return the catalog to use for this course.
+
+    Uses an existing catalog in the restored environment.
+    Does not attempt automatic catalog creation.
     """
-    catalog_exists = name.lower() in catalogs
-    return catalog_exists
-
-
-def build_user_catalog(prefix: str = "labuser", catalog_forced = None) -> str:
-    """
-    Returns a UC catalog name for the current user.
-
-    Parameters
-    ----------
-    prefix: str
-        Prefix for the catalog name. Default is 'labuser'.
-    catalog_forced: str
-        Uses this catalog name if specified. Otherwise uses the prefix and user's name.
-
-    Vocareum behavior:
-      - If a catalog equals the user's 'labuserxxx' name and already exists,
-        assume you are in Vocareum and use it.
-      - Assumes users have a catalog by default in Vocareum.
-
-    Other workspaces:
-      - Use <prefix>_<user> and create it if possible for that user.
-
-    Example:
-        my_catalog = build_user_catalog(catalog_forced=None)  ## <-- Force the usage of a catalog if you can't create one.
-    """
-
-    # Obtain user's email and user name name
     user_email = _current_user_email()
-    user_name = user_email.split("@")[0]
+    catalogs = _get_workspace_catalogs()
 
-    # Make the user name safe if it's not in Vocareum
-    safe_user_name = _safe_uc_name(user_name)
+    if catalog_forced is None:
+        raise ValueError(
+            "Specify an existing catalog using catalog_forced."
+        )
 
+    catalog_name = catalog_forced.strip().lower()
 
-    # VOCAREUM CHECKER: Catalog is just the username (already provisioned)
-    # and starts with 'labuser'
-    vocareum_catalog_name = safe_user_name
+    if not _catalog_exists(catalog_name, catalogs):
+        raise RuntimeError(
+            f"Catalog '{catalog_name}' is not visible to the current user. "
+            f"Visible catalogs: {sorted(catalogs)}"
+        )
 
-    if user_email.lower().endswith("@vocareum.com"):
-        print("✅ Vocareum workspace detected.")
+    print(f"Using catalog '{catalog_name}' for user '{user_email}'.")
+    return catalog_name
 
-        if _catalog_exists(
-            name=vocareum_catalog_name,
-            catalogs=_get_workspace_catalogs()
-        ):
-            print(f"✅ Using existing Vocareum catalog: '{vocareum_catalog_name}'.")
-            return vocareum_catalog_name
-        else:
-            raise ValueError(
-                f"❌ Catalog '{vocareum_catalog_name}' does not exist in this Vocareum workspace. "
-                "Please create the catalog or verify the catalog name before continuing."
-            )
-
-    # OTHER WORKSPACE SETUP
-    else:
-        print("ℹ️ Non-Vocareum workspace detected. Setting up catalog.")
-
-        # Setting catalog for workspaces outside of Vocareum using the provided prefix and user name
-        # Limit the user's name to 19 characters. THis is done because there is a limit to the catalog.schema.object name (64 characters). For someone with a long name this could cause issus. Using 19 because that is the general size of the vocareum user name
-        safe_user_name_char_restrict = safe_user_name[:19]
-
-        # If catalog_forced is set, will use that by default.
-        if catalog_forced is None:
-            catalog_name = f"{prefix}_{safe_user_name_char_restrict}"
-            print(f"ℹ️ Using default catalog name: '{catalog_name}'.")
-        else:
-            catalog_name = catalog_forced
-            print(f"ℹ️ Using specified catalog name: '{catalog_name}'.")
-
-
-        # Check if the user already has this catalog with the prefix_safeusername
-        if _catalog_exists(name=catalog_name, catalogs=_get_workspace_catalogs()) == True:
-            print(f"✅ Catalog '{catalog_name}' already exists. Using this catalog.")
-            return catalog_name
-        elif _catalog_exists(name=catalog_name, catalogs=_get_workspace_catalogs()) == False and catalog_forced is not None:
-            raise RuntimeError(
-                f"❌ Catalog '{catalog_name}' does not exist in this workspace. "
-                "A forced catalog name must reference an existing catalog. "
-                "Create the catalog or reference an existing one, then rerun the notebook."
-            )
-        else:
-            try:
-                print(f"ℹ️ Catalog '{catalog_name}' not found. Creating it now...")
-                spark.sql(f"CREATE CATALOG IF NOT EXISTS {catalog_name}")
-                print(f"✅ Catalog '{catalog_name}' created successfully.")
-                return catalog_name
-            except Exception as e:
-                print(
-                    f"⚠️ Could not create catalog '{catalog_name}'. "
-                    "You may not have privileges to create catalogs in this workspace.\n"
-                    f"Error: {e}"
-                )
 
 # COMMAND ----------
 
@@ -423,7 +359,7 @@ def display_config_values(config_values, copy_values=False):
 
 # COMMAND ----------
 
-my_catalog = build_user_catalog(catalog_forced= None)
+my_catalog = build_user_catalog(catalog_forced="databricks_ilt")
 spark.sql(f'USE CATALOG {my_catalog}')
 
 spark.sql(f'DECLARE OR REPLACE VARIABLE my_catalog STRING')

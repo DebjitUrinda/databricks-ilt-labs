@@ -97,7 +97,7 @@ SELECT current_catalog(), current_schema()
 
 -- COMMAND ----------
 
-LIST '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
+LIST '/Volumes/databricks_ilt/day1/raw/users-historical'
 
 -- COMMAND ----------
 
@@ -135,7 +135,7 @@ LIST '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
 
 SELECT *
 FROM read_files(
-  "/Volumes/dbacademy_ecommerce/v01/raw/users-historical",
+  "/Volumes/databricks_ilt/day1/raw/users-historical",
   format => 'parquet')
 LIMIT 10;
 
@@ -162,7 +162,7 @@ SELECT
   *,
   cast(from_unixtime(user_first_touch_timestamp/1000000) AS DATE) AS first_touch_date
 FROM read_files(
-  "/Volumes/dbacademy_ecommerce/v01/raw/users-historical",
+  "/Volumes/databricks_ilt/day1/raw/users-historical",
   format => 'parquet')
 LIMIT 10;
 
@@ -205,7 +205,7 @@ SELECT
   _metadata.file_name AS source_file,                              -- Ingest data source file name
   current_timestamp() as ingestion_time                            -- Ingestion timestamp
 FROM read_files(
-  "/Volumes/dbacademy_ecommerce/v01/raw/users-historical",
+  "/Volumes/databricks_ilt/day1/raw/users-historical",
   format => 'parquet')
 LIMIT 10;
 
@@ -234,7 +234,7 @@ SELECT
   _metadata.file_name AS source_file,                              -- Ingest data source file name
   current_timestamp() as ingestion_time                            -- Ingestion timestamp
 FROM read_files(
-  "/Volumes/dbacademy_ecommerce/v01/raw/users-historical",
+  "/Volumes/databricks_ilt/day1/raw/users-historical",
   format => 'parquet');
 
 
@@ -278,7 +278,7 @@ ORDER BY source_file;
 -- MAGIC df = (spark
 -- MAGIC       .read
 -- MAGIC       .format("parquet")
--- MAGIC       .load("/Volumes/dbacademy_ecommerce/v01/raw/users-historical")
+-- MAGIC       .load("/Volumes/databricks_ilt/day1/raw/users-historical")
 -- MAGIC     )
 -- MAGIC
 -- MAGIC
@@ -296,12 +296,12 @@ ORDER BY source_file;
 -- MAGIC  .write
 -- MAGIC  .format("delta")
 -- MAGIC  .mode("overwrite")
--- MAGIC  .saveAsTable(f"{my_catalog}.data_ingestion.historical_users_bronze_python_metadata")
+-- MAGIC  .saveAsTable(f"databricks_ilt.data_ingestion.historical_users_bronze_python_metadata")
 -- MAGIC )
 -- MAGIC
 -- MAGIC
 -- MAGIC # 4. Read and display the table
--- MAGIC historical_users_bronze_python_metadata = spark.table(f"{my_catalog}.data_ingestion.historical_users_bronze_python_metadata")
+-- MAGIC historical_users_bronze_python_metadata = spark.table(f"databricks_ilt.data_ingestion.historical_users_bronze_python_metadata")
 -- MAGIC
 -- MAGIC display(historical_users_bronze_python_metadata)
 

@@ -30,7 +30,7 @@ def corrupt_row(input_csv, output_csv):
 
 # Example usage
 corrupt_row(
-    '/Volumes/dbacademy_ecommerce/v01/raw/products-csv/part-00000-tid-1663954264736839188-daf30e86-5967-4173-b9ae-d1481d3506db-2367-1-c000.csv',
+    '/Volumes/databricks_ilt/day1/raw/products-csv/part-00000-tid-1663954264736839188-daf30e86-5967-4173-b9ae-d1481d3506db-2367-1-c000.csv',
     f'/Volumes/{my_catalog}/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv'
 )
 
@@ -50,7 +50,7 @@ SELECT
   _METADATA.FILE_NAME AS source_file, 
   current_timestamp() as ingestion_time
 FROM READ_FILES(
-        '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',
         FORMAT => "csv",
         SEP => ",",
         HEADER => true,
@@ -83,7 +83,7 @@ SELECT
   _metadata.file_name AS source_file, 
   current_timestamp() as ingestion_time
 FROM read_files(
-        '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/lab_malformed_data.csv',
         format => "csv",
         sep => ",",
         header => true,

@@ -122,7 +122,7 @@ SELECT
   *,
   cast(unbase64(value) as STRING) as decoded_value
 FROM read_files(
-        '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/json_demo_files/lab_kafka_events.json',
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/json_demo_files/lab_kafka_events.json',
         format => "json", 
         schema => '''
           key STRING, 

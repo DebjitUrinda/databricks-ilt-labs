@@ -126,7 +126,7 @@ print(f"File written with 1 malformed 'timestamp' at position {insert_position}:
 # MAGIC   *,
 # MAGIC   cast(unbase64(value) as STRING) as decoded_value
 # MAGIC FROM read_files(
-# MAGIC       '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/json_demo_files/lab_kafka_events.json',
+# MAGIC       '/Volumes/databricks_ilt/data_ingestion/landing_folder/json_demo_files/lab_kafka_events.json',
 # MAGIC         format => "json", 
 # MAGIC         schema => '''
 # MAGIC           key STRING, 

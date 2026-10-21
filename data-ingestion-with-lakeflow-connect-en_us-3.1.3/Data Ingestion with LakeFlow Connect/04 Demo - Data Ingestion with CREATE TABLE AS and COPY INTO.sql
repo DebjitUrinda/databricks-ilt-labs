@@ -94,7 +94,7 @@ SELECT current_catalog(), current_schema()
 
 -- COMMAND ----------
 
-LIST '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
+LIST '/Volumes/databricks_ilt/day1/raw/users-historical'
 
 -- COMMAND ----------
 
@@ -103,8 +103,8 @@ LIST '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
 
 -- COMMAND ----------
 
-SELECT * 
-FROM parquet.`/Volumes/dbacademy_ecommerce/v01/raw/users-historical`;
+SELECT count(*)
+FROM parquet.`/Volumes/databricks_ilt/day1/raw/users-historical`;
 
 -- COMMAND ----------
 
@@ -159,7 +159,7 @@ FROM parquet.`/Volumes/dbacademy_ecommerce/v01/raw/users-historical`;
 
 SELECT * 
 FROM read_files(
-  '/Volumes/dbacademy_ecommerce/v01/raw/users-historical',
+  '/Volumes/databricks_ilt/day1/raw/users-historical',
   format => 'parquet'
 )
 LIMIT 10;
@@ -181,7 +181,7 @@ DROP TABLE IF EXISTS historical_users_bronze_ctas_rf;
 CREATE TABLE historical_users_bronze_ctas_rf 
 SELECT * 
 FROM read_files(
-        '/Volumes/dbacademy_ecommerce/v01/raw/users-historical',
+        '/Volumes/databricks_ilt/day1/raw/users-historical',
         format => 'parquet'
       );
 
@@ -242,7 +242,7 @@ DESCRIBE TABLE EXTENDED historical_users_bronze_ctas_rf;
 -- MAGIC df = (spark
 -- MAGIC       .read
 -- MAGIC       .format("parquet")
--- MAGIC       .load("/Volumes/dbacademy_ecommerce/v01/raw/users-historical")
+-- MAGIC       .load("/Volumes/databricks_ilt/day1/raw/users-historical")
 -- MAGIC     )
 -- MAGIC
 -- MAGIC
@@ -314,7 +314,7 @@ CREATE TABLE historical_users_bronze_ci (
 
 -- Use COPY INTO to populate UC table
 COPY INTO historical_users_bronze_ci
-  FROM '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
+  FROM '/Volumes/databricks_ilt/day1/raw/users-historical'
   FILEFORMAT = parquet;
 
 -- COMMAND ----------
@@ -327,7 +327,7 @@ COPY INTO historical_users_bronze_ci
 -- COMMAND ----------
 
 COPY INTO historical_users_bronze_ci
-  FROM '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
+  FROM '/Volumes/databricks_ilt/day1/raw/users-historical'
   FILEFORMAT = parquet
   COPY_OPTIONS ('mergeSchema' = 'true');     -- Merge the schema of each file
 
@@ -365,7 +365,7 @@ CREATE TABLE historical_users_bronze_ci_no_schema;
 
 -- Use COPY INTO to populate UC table
 COPY INTO historical_users_bronze_ci_no_schema
-  FROM '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
+  FROM '/Volumes/databricks_ilt/day1/raw/users-historical'
   FILEFORMAT = parquet
   COPY_OPTIONS ('mergeSchema' = 'true');
 
@@ -388,7 +388,7 @@ COPY INTO historical_users_bronze_ci_no_schema
 -- COMMAND ----------
 
 COPY INTO historical_users_bronze_ci_no_schema
-  FROM '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
+  FROM '/Volumes/databricks_ilt/day1/raw/users-historical'
   FILEFORMAT = parquet
   COPY_OPTIONS ('mergeSchema' = 'true');
 

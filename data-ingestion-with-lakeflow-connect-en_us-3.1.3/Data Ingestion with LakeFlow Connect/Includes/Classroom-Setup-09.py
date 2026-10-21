@@ -34,7 +34,7 @@ create_volume(in_catalog = my_catalog,
 
 
 corrupt_first_order_id(
-    '/Volumes/dbacademy_ecommerce/v01/raw/sales-csv/000.csv',
+    '/Volumes/databricks_ilt/day1/raw/sales-csv/000.csv',
     f'/Volumes/{my_catalog}/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv'
 )
 
@@ -63,7 +63,7 @@ def blank_out_first_header_and_trim_five_rows(input_csv, output_csv):
 
 # Example usage
 blank_out_first_header_and_trim_five_rows(
-    '/Volumes/dbacademy_ecommerce/v01/raw/sales-csv/000.csv',
+    '/Volumes/databricks_ilt/day1/raw/sales-csv/000.csv',
     f'/Volumes/{my_catalog}/data_ingestion/landing_folder/csv_demo_files/malformed_example_2_data.csv'
 )
 

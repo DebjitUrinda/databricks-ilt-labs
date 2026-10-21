@@ -95,7 +95,7 @@ SELECT current_catalog(), current_schema()
 
 -- COMMAND ----------
 
-LIST '/Volumes/dbacademy_ecommerce/v01/raw/sales-csv'
+LIST '/Volumes/databricks_ilt/day1/raw/sales-csv'
 
 -- COMMAND ----------
 
@@ -115,7 +115,7 @@ LIST '/Volumes/dbacademy_ecommerce/v01/raw/sales-csv'
 -- COMMAND ----------
 
 SELECT * 
-FROM csv.`/Volumes/dbacademy_ecommerce/v01/raw/sales-csv`
+FROM csv.`/Volumes/databricks_ilt/day1/raw/sales-csv`
 LIMIT 5;
 
 -- COMMAND ----------
@@ -131,7 +131,7 @@ LIMIT 5;
 
 SELECT * 
 FROM read_files(
-        "/Volumes/dbacademy_ecommerce/v01/raw/sales-csv",
+        "/Volumes/databricks_ilt/day1/raw/sales-csv",
         format => "csv"
       )
 LIMIT 5;
@@ -163,7 +163,7 @@ LIMIT 5;
 
 SELECT * 
 FROM read_files(
-        "/Volumes/dbacademy_ecommerce/v01/raw/sales-csv",
+        "/Volumes/databricks_ilt/day1/raw/sales-csv",
         format => "csv",
         sep => "|",
         header => true
@@ -202,7 +202,7 @@ SELECT
   _metadata.file_name AS source_file, 
   current_timestamp() as ingestion_time 
 FROM read_files(
-        "/Volumes/dbacademy_ecommerce/v01/raw/sales-csv",
+        "/Volumes/databricks_ilt/day1/raw/sales-csv",
         format => "csv",
         sep => "|",
         header => true
@@ -240,7 +240,7 @@ DESCRIBE TABLE EXTENDED sales_bronze;
 -- MAGIC       .option("header", True) 
 -- MAGIC       .option("sep","|") 
 -- MAGIC       .option("rescuedDataColumn", "_rescued_data")       # <--------- Add the rescued data column
--- MAGIC       .csv("/Volumes/dbacademy_ecommerce/v01/raw/sales-csv")
+-- MAGIC       .csv("/Volumes/databricks_ilt/day1/raw/sales-csv")
 -- MAGIC     )
 -- MAGIC
 -- MAGIC df.display()
@@ -276,7 +276,7 @@ DESCRIBE TABLE EXTENDED sales_bronze;
 
 -- COMMAND ----------
 
-values('/Volumes/'||my_catalog || '/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv')
+values('/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv')
 
 -- COMMAND ----------
 
@@ -309,7 +309,7 @@ values('/Volumes/'||my_catalog || '/data_ingestion/landing_folder/csv_demo_files
 -- MAGIC %python
 -- MAGIC spark.sql(f'''
 -- MAGIC     SELECT *
--- MAGIC     FROM text.`/Volumes/{my_catalog}/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv`
+-- MAGIC     FROM text.`/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv`
 -- MAGIC ''').display()
 
 -- COMMAND ----------
@@ -324,7 +324,7 @@ values('/Volumes/'||my_catalog || '/data_ingestion/landing_folder/csv_demo_files
 
 SELECT *
 FROM read_files(
-        '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv',
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv',
         format => "csv",
         sep => "|",
         header => true
@@ -350,7 +350,7 @@ FROM read_files(
 
 SELECT *
 FROM read_files(
-        '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv',
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/malformed_example_1_data.csv',
         format => "csv",
         sep => "|",
         header => true,
@@ -387,7 +387,7 @@ FROM read_files(
 -- MAGIC %python
 -- MAGIC spark.sql(f'''
 -- MAGIC   SELECT *
--- MAGIC   FROM text.`/Volumes/{my_catalog}/data_ingestion/landing_folder/csv_demo_files/malformed_example_2_data.csv`
+-- MAGIC   FROM text.`/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/malformed_example_2_data.csv`
 -- MAGIC ''').display()
 
 -- COMMAND ----------
@@ -411,7 +411,7 @@ DROP TABLE IF EXISTS demo_4_example_2_bronze;
 CREATE OR REPLACE TABLE demo_4_example_2_bronze AS
 SELECT *
 FROM read_files(
-        '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_files/malformed_example_2_data.csv',
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/malformed_example_2_data.csv',
         format => "csv",
         sep => "|",
         header => true
@@ -437,7 +437,7 @@ SELECT
   cast(_rescued_data:_c0 AS BIGINT) AS order_id,
   *
 FROM read_files(
-        '/Volumes/' || my_catalog || '/data_ingestion/landing_folder/csv_demo_files/malformed_example_2_data.csv',
+        '/Volumes/databricks_ilt/data_ingestion/landing_folder/csv_demo_files/malformed_example_2_data.csv',
         format => "csv",
         sep => "|",
         header => true

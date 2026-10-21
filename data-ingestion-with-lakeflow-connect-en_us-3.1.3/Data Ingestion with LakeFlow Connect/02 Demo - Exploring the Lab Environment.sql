@@ -223,7 +223,7 @@ DESCRIBE TABLE EXTENDED mytable
 
 -- COMMAND ----------
 
-DESCRIBE VOLUME dbacademy_ecommerce.v01.raw;
+DESCRIBE VOLUME databricks_ilt.day1.raw;
 
 -- COMMAND ----------
 
@@ -245,7 +245,7 @@ DESCRIBE VOLUME dbacademy_ecommerce.v01.raw;
 
 -- COMMAND ----------
 
-LIST '/Volumes/dbacademy_ecommerce/v01/raw/users-historical'
+LIST '/Volumes/databricks_ilt/day1/raw/users-historical'
 
 -- COMMAND ----------
 

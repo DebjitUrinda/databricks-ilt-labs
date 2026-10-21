@@ -93,7 +93,7 @@ SELECT current_catalog(), current_schema()
 
 -- COMMAND ----------
 
-LIST '/Volumes/dbacademy_ecommerce/v01/raw/events-kafka'
+LIST '/Volumes/databricks_ilt/day1/raw/events-kafka'
 
 -- COMMAND ----------
 
@@ -124,8 +124,9 @@ LIST '/Volumes/dbacademy_ecommerce/v01/raw/events-kafka'
 
 -- COMMAND ----------
 
+-- DBTITLE 1,How is it showing data without choosing the file
 SELECT * 
-FROM text.`/Volumes/dbacademy_ecommerce/v01/raw/events-kafka`
+FROM text.`/Volumes/databricks_ilt/day1/raw/events-kafka`
 LIMIT 5;
 
 -- COMMAND ----------
@@ -143,7 +144,7 @@ LIMIT 5;
 
 SELECT *
 FROM read_files(
-  "/Volumes/dbacademy_ecommerce/v01/raw/events-kafka",
+  "/Volumes/databricks_ilt/day1/raw/events-kafka",
   format => "json"
 )
 LIMIT 10;
@@ -178,7 +179,7 @@ DROP TABLE IF EXISTS kafka_events_bronze_raw;
 CREATE TABLE kafka_events_bronze_raw AS
 SELECT *
 FROM read_files(
-  "/Volumes/dbacademy_ecommerce/v01/raw/events-kafka",
+  "/Volumes/databricks_ilt/day1/raw/events-kafka",
   format => "json"
 );
 

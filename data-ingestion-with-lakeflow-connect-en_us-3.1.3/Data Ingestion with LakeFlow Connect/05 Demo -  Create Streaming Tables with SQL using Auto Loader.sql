@@ -152,7 +152,7 @@ SELECT current_catalog(), current_schema()
 
 SELECT *
 FROM read_files(
-  '/Volumes/' || my_catalog || '/data_ingestion/csv_files_autoloader_source',
+  '/Volumes/databricks_ilt/data_ingestion/csv_files_autoloader_source',
   format => 'CSV',
   sep => '|',
   header => true
@@ -183,7 +183,7 @@ SCHEDULE EVERY 1 WEEK     -- Scheduling the refresh is optional
 AS
 SELECT *
 FROM STREAM read_files(
-  '/Volumes/ADD_YOUR_CATALOG_NAME/data_ingestion/csv_files_autoloader_source', -- Insert the path to you csv_files_autoloader_source volume (example shown)
+  '/Volumes/databricks_ilt/data_ingestion/csv_files_autoloader_source', -- Insert the path to you csv_files_autoloader_source volume (example shown)
   format => 'CSV',
   sep => '|',
   header => true
